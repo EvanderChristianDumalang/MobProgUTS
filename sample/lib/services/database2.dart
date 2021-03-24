@@ -15,6 +15,10 @@ class DatabaseService2{
     return;
   }
 
+  Future updatePortofolio (String kode, String deskripsi, int jumlah) async{
+    return await userPortofolio.doc(uid).set({'kode': kode, 'deskripsi': deskripsi, 'jumlah': jumlah, 'uid': uid});
+  }
+
   Stream<QuerySnapshot> get portofolio{
     return userPortofolio.snapshots();
   }  

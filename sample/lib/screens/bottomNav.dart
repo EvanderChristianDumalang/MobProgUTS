@@ -12,18 +12,18 @@ class bottomNav extends StatefulWidget {
 }
 
 class _bottomNavState extends State<bottomNav> {
-  
   int _selectedIndex = 0;
   final List<Widget> page = [
     Home(),
-    Transaction(),
+    transaction(),
     Users(),
   ];
-    void _onItemTapped(int index){
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,55 +32,57 @@ class _bottomNavState extends State<bottomNav> {
         title: Text('TRAPP'),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items:[
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-            backgroundColor: Colors.blue
-          ),
+              icon: Icon(Icons.home),
+              label: 'Home',
+              backgroundColor: Colors.blue),
           BottomNavigationBarItem(
-            icon: Icon(Icons.note_add_sharp),
-            label: 'Portfolio',
-            backgroundColor: Colors.blue
-          ),
+              icon: Icon(Icons.note_add_sharp),
+              label: 'Portfolio',
+              backgroundColor: Colors.blue),
           BottomNavigationBarItem(
-            icon: Icon(Icons.supervised_user_circle),
-            label: 'User',
-            backgroundColor: Colors.blue
-          ),
+              icon: Icon(Icons.supervised_user_circle),
+              label: 'User',
+              backgroundColor: Colors.blue),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.cyan,
         onTap: _onItemTapped,
       ),
-      body: IndexedStack(
-        index:_selectedIndex,
-        children:page),
+      body: IndexedStack(index: _selectedIndex, children: page),
     );
   }
 }
 
-class stockSearch extends SearchDelegate<String>{
+class stockSearch extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {
-    return[
-        IconButton(icon: Icon(Icons.clear), onPressed:(){query='';})
-      ];
-    }
-
-    @override
-    Widget buildLeading(BuildContext context) {
-      return IconButton(icon: Icon(Icons.arrow_back), onPressed: (){close(context, null);});
-    }
-  
-    @override
-    Widget buildResults(BuildContext context) {
-      return Text("BLOK");
-    }
-  
-    @override
-    Widget buildSuggestions(BuildContext context) {
-      return Text("BLEK");
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = '';
+          })
+    ];
   }
 
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Text("BLOK");
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return Text("BLEK");
+  }
 }

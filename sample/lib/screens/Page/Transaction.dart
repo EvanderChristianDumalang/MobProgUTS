@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sample/services/auth.dart';
 
-class Transaction extends StatelessWidget {
+class transaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthService _authService = AuthService();
@@ -46,8 +46,7 @@ class Transaction extends StatelessWidget {
                                           margin: EdgeInsets.only(top: 10)),
                                       Align(
                                         alignment: Alignment.topLeft,
-                                        child: Text(
-                                            portofolio['deskripsi'],
+                                        child: Text(portofolio['deskripsi'],
                                             style: TextStyle(fontSize: 15)),
                                       ),
                                     ],

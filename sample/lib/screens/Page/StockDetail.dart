@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_sparkline/flutter_sparkline.dart';
@@ -23,12 +25,12 @@ class _stockdetailState extends State<stockdetail> {
     this.chart();
   }
 
-
   List chart2 = [];
   List<double> chart3 = [];
   Future<void> chart() async {
     var symbol = lowercase(widget.saham['nama']);
-    var api = await http.get(Uri.parse('https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=M&from=1600651390&to=2021243390&token=c12t6dv48v6oi2531ibg'));
+    var api = await http.get(Uri.parse(
+        'https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=M&from=1600651390&to=2021243390&token=c12t6dv48v6oi2531ibg'));
     if (api.statusCode == 200) {
       var stockapi = jsonDecode(api.body);
       var x = {"data": stockapi['c']};
@@ -47,7 +49,8 @@ class _stockdetailState extends State<stockdetail> {
     TextEditingController _jumlah = TextEditingController();
     var _kode = widget.saham['nama'];
     var _deskripsi = widget.saham['description'];
-  
+    final user = FirebaseAuth.instance.currentUser;
+
     return showDialog(
         context: context,
         builder: (context) {
@@ -58,8 +61,10 @@ class _stockdetailState extends State<stockdetail> {
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder:(context)=>Transaction()));
-                  DatabaseService2().addPortofolio(_kode, _deskripsi, int.parse(_jumlah.text));
+                  DatabaseService2().addPortofolio(
+                      _kode, _deskripsi, int.parse(_jumlah.text));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => transaction()));
                 },
                 child: Text('BUY'),
               ),
@@ -98,7 +103,8 @@ class _stockdetailState extends State<stockdetail> {
             Container(margin: EdgeInsets.only(bottom: 10)),
             Align(
               alignment: Alignment.topLeft,
-              child: Text(widget.saham['price'], style: TextStyle(fontSize: 20)),
+              child:
+                  Text(widget.saham['price'], style: TextStyle(fontSize: 20)),
             ),
             Container(margin: EdgeInsets.only(bottom: 40)),
             Container(
@@ -121,9 +127,13 @@ class _stockdetailState extends State<stockdetail> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    buyAlertBox(context,);
+                    buyAlertBox(
+                      context,
+                    );
                   },
-                  child: Text('BUY',),
+                  child: Text(
+                    'BUY',
+                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {},
