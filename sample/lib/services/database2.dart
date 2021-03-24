@@ -8,10 +8,10 @@ class DatabaseService2{
 
   final CollectionReference userPortofolio = FirebaseFirestore.instance.collection('portofolio');
 
-  Future <void> addPortofolio (String kode, String deskripsi, int jumlah) async {
+  Future <void> addPortofolio (String kode, String deskripsi,int price, int jumlah) async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     String uid = _auth.currentUser.uid.toString();
-    userPortofolio.add({'kode': kode, 'deskripsi': deskripsi, 'jumlah': jumlah, 'uid': uid});
+    userPortofolio.add({'kode': kode, 'deskripsi': deskripsi,'price':price, 'jumlah': jumlah, 'uid': uid});
     return;
   }
 

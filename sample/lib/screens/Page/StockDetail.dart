@@ -35,7 +35,6 @@ class _stockdetailState extends State<stockdetail> {
       chart2 = x['data'];
       for (int i = 0; i < chart2.length; i++) {
         var ubah = double.parse(chart2[i].toString());
-        print(ubah);
         setState(() {
           chart3.add(ubah);
         });
@@ -47,7 +46,7 @@ class _stockdetailState extends State<stockdetail> {
     TextEditingController _jumlah = TextEditingController();
     var _kode = widget.saham['nama'];
     var _deskripsi = widget.saham['description'];
-  
+    var _price = widget.saham['price'];
     return showDialog(
         context: context,
         builder: (context) {
@@ -57,9 +56,9 @@ class _stockdetailState extends State<stockdetail> {
                 controller: _jumlah, keyboardType: TextInputType.number),
             actions: <Widget>[
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder:(context)=>Transaction()));
-                  DatabaseService2().addPortofolio(_kode, _deskripsi, int.parse(_jumlah.text));
+                onPressed: (){
+                    DatabaseService2().addPortofolio(_kode, _deskripsi,int.parse(_price),int.parse(_jumlah.text));
+                    Navigator.pop(context);
                 },
                 child: Text('BUY'),
               ),
@@ -121,7 +120,7 @@ class _stockdetailState extends State<stockdetail> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    buyAlertBox(context,);
+                      buyAlertBox(context);
                   },
                   child: Text('BUY',),
                 ),
