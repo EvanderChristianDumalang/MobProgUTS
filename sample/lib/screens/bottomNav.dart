@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sample/screens/Page/User.dart';
 import 'Page/Home.dart';
 import 'Page/Transaction.dart';
-
 class bottomNav extends StatefulWidget {
   // const Home({Key key, this.stock}) : super(key: key);
   @override
@@ -15,7 +14,7 @@ class _bottomNavState extends State<bottomNav> {
   int _selectedIndex = 0;
   final List<Widget> page = [
     Home(),
-    transaction(),
+    Transaction(),
     Users(),
   ];
   void _onItemTapped(int index) {
