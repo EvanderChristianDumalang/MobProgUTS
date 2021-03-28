@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sample/services/auth.dart';
+import 'package:sample/services/database3.dart';
 
 class Users extends StatefulWidget {
   const Users({Key key, this.saham}) : super(key: key);
@@ -10,9 +11,9 @@ class Users extends StatefulWidget {
 }
 
 class _UsersState extends State<Users> {
+  int balance;
   int saldo;
   String error = '';
-  int saldoo;
   withdrawAletrBox(BuildContext context) {
     TextEditingController custom = TextEditingController();
     TextEditingController custom1 = TextEditingController();
@@ -21,7 +22,7 @@ class _UsersState extends State<Users> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Deposit"),
+            title: Text("Withdraw"),
             content: SingleChildScrollView(
               child: Form(
                   child: Column(children: [
@@ -53,7 +54,24 @@ class _UsersState extends State<Users> {
                   try {
                     if (ubah <= saldo) {
                       setState(() {
+                        FirebaseFirestore.instance
+                            .collection('balance')
+                            .where('uid',
+                                isEqualTo: _authService.getCurrentUID())
+                            .get()
+                            .then((value) {
+                          value.docs.forEach((element) {
+                            FirebaseFirestore.instance
+                                .collection('balance')
+                                .doc(element.id)
+                                .delete()
+                                .then((value) {
+                              DatabaseService3().addBalance(saldo);
+                            });
+                          });
+                        });
                         saldo = saldo - ubah;
+                        balance=saldo;
                       });
                     }
                   } catch (e) {
@@ -104,13 +122,32 @@ class _UsersState extends State<Users> {
               ElevatedButton(
                 onPressed: () {
                   var ubah = int.parse(custom2.text);
+                  saldo=balance;
                   if (saldo == null) {
                     setState(() {
                       saldo = ubah;
+                      DatabaseService3().addBalance(saldo);
+                      balance=saldo;
                     });
                   } else {
                     setState(() {
+                      FirebaseFirestore.instance
+                          .collection('balance')
+                          .where('uid', isEqualTo: _authService.getCurrentUID())
+                          .get()
+                          .then((value) {
+                        value.docs.forEach((element) {
+                          FirebaseFirestore.instance
+                              .collection('balance')
+                              .doc(element.id)
+                              .delete()
+                              .then((value) {
+                            DatabaseService3().addBalance(saldo);
+                          });
+                        });
+                      });
                       saldo = ubah + saldo;
+                      balance=saldo;
                     });
                   }
                 },
@@ -127,13 +164,27 @@ class _UsersState extends State<Users> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('TRAPP'),
+        title: Text('TRAPP'),actions:  <Widget>[IconButton(icon: Icon(Icons.refresh), onPressed:(){
+         Navigator.push( context, MaterialPageRoute( builder: (context) => Users()), ).then((value) => setState(() {}));
+        }) 
+        ],
       ),
       body: getBody(),
     );
   }
 
   Widget getBody() {
+
+      FirebaseFirestore.instance
+        .collection('balance')
+        .where('uid', isEqualTo: _authService.getCurrentUID())
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        balance = doc['balance'];
+      });
+    });
+           
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.fromLTRB(30, 40, 30, 0),
@@ -199,7 +250,7 @@ class _UsersState extends State<Users> {
                         Container(margin: EdgeInsets.only(bottom: 20)),
                         Align(
                           alignment: Alignment.topLeft,
-                          child: Text("Balance:" + saldo.toString(),
+                          child: Text("Balance:" + balance.toString(),
                               style: TextStyle(fontSize: 20)),
                         ),
                       ]);

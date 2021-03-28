@@ -37,21 +37,24 @@ List porto=[];
               itemCount: snapshot.data.docs.length,
               itemBuilder: (context, index) {
                 var portofolio = snapshot.data.docs[index];
+                var x = {
+                        'price': portofolio['price'].toString(),
+                        'nama': portofolio['kode'],
+                        'description': portofolio['deskripsi'],
+                      };
+                      porto.add(x);
                 return InkWell(
                     onTap: () {
                      
-                      var x = {
-                        "price": portofolio['price'].toString(),
-                        "nama": portofolio['kode'],
-                        "description": portofolio['deskripsi'],
-                      };
-                      porto.add(x);
-                      print(porto);
+                      
+                      if(porto.isNotEmpty){
+                      print(porto);}
+                      if(porto.isNotEmpty){
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  stockdetail(saham: porto[index])));
+                                  stockdetail(saham: porto[index])));}
                     },
                     child: Container(
                         padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
