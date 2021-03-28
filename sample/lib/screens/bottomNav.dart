@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sample/screens/Page/User.dart';
 import 'Page/Home.dart';
 import 'Page/Transaction.dart';
+
 class bottomNav extends StatefulWidget {
   // const Home({Key key, this.stock}) : super(key: key);
   @override
