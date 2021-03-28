@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_sparkline/flutter_sparkline.dart';
 import 'package:sample/screens/Page/Transaction.dart';
 import 'package:sample/services/database2.dart';
+import 'package:sample/services/auth.dart';
 
 String lowercase(String s) {
   return '${s.toLowerCase()}';
@@ -27,6 +29,8 @@ class _stockdetailState extends State<stockdetail> {
 
   List chart2 = [];
   List<double> chart3 = [];
+  List porto = [];
+  final AuthService _authService = AuthService();
   Future<void> chart() async {
     var symbol = lowercase(widget.saham['nama']);
     var api = await http.get(Uri.parse(
@@ -37,7 +41,6 @@ class _stockdetailState extends State<stockdetail> {
       chart2 = x['data'];
       for (int i = 0; i < chart2.length; i++) {
         var ubah = double.parse(chart2[i].toString());
-        print(ubah);
         setState(() {
           chart3.add(ubah);
         });
@@ -49,8 +52,7 @@ class _stockdetailState extends State<stockdetail> {
     TextEditingController _jumlah = TextEditingController();
     var _kode = widget.saham['nama'];
     var _deskripsi = widget.saham['description'];
-    final user = FirebaseAuth.instance.currentUser;
-
+    var _price = widget.saham['price'];
     return showDialog(
         context: context,
         builder: (context) {
@@ -61,10 +63,33 @@ class _stockdetailState extends State<stockdetail> {
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () {
-                  DatabaseService2().addPortofolio(
-                      _kode, _deskripsi, int.parse(_jumlah.text));
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => transaction()));
+                  final db = FirebaseFirestore.instance
+                      .collection('portofolio')
+                      .where('uid', isEqualTo: _authService.getCurrentUID());
+                  QuerySnapshot qs = db.snapshots();
+                  if (db.get(). {
+                    db.get().then((value) {
+                      value.docs.forEach((element) {
+                        FirebaseFirestore.instance
+                            .collection('portofolio')
+                            .doc(element.id)
+                            .delete()
+                            .then((value) {
+                          FirebaseFirestore.instance
+                              .collection('portofolio')
+                              .doc(_authService.getCurrentUID())
+                              .update({
+                            'jumlah':
+                                FieldValue.increment(int.parse(_jumlah.text))
+                          });
+                        });
+                      });
+                    });
+                  } else {
+                    DatabaseService2().addPortofolio(_kode, _deskripsi,
+                        int.parse(_price), int.parse(_jumlah.text));
+                  }
+                  Navigator.pop(context);
                 },
                 child: Text('BUY'),
               ),
@@ -127,9 +152,7 @@ class _stockdetailState extends State<stockdetail> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    buyAlertBox(
-                      context,
-                    );
+                    buyAlertBox(context);
                   },
                   child: Text(
                     'BUY',
