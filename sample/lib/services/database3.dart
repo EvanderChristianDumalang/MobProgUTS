@@ -12,7 +12,7 @@ class DatabaseService3{
     FirebaseAuth _auth = FirebaseAuth.instance;
     String uid = _auth.currentUser.uid.toString();
     userBalance.add({'balance':balance, 'uid': uid});
-    return;
+    return; 
   }
 
   Stream<QuerySnapshot> get portofolio{

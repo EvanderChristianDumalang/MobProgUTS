@@ -1,12 +1,7 @@
 import 'package:sample/screens/Page/StockDetail.dart';
-import 'package:sample/screens/Page/User.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:sample/services/auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
 import 'package:http/http.dart'as http;
-// import 'main.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -27,10 +22,8 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     this.stocks();
-    // Navigator.push(context, MaterialPageRoute(builder: (context)=>home(stock:saham)));
   }
 
-  
   Future<void>stocks()async{
     var api = await http.get(Uri.parse('https://finnhub.io/api/v1/stock/symbol?exchange=JK&token=c12t6dv48v6oi2531ibg'));
     if(api.statusCode==200){
@@ -41,16 +34,14 @@ class _HomeState extends State<Home> {
     }
     for(int i=0;i<10;i++){
       var harga=lowercase(saham[i]['symbol']);
+      // ignore: unnecessary_brace_in_string_interps
       var hargaapi = await http.get(Uri.parse('https://finnhub.io/api/v1/quote?symbol=${harga}&token=c12t6dv48v6oi2531ibg'));
-      var chartapi = await http.get(Uri.parse('https://finnhub.io/api/v1/stock/candle?symbol=${harga}&resolution=D&from=1600651390&to=2021243390&token=c12t6dv48v6oi2531ibg'));
       if(hargaapi.statusCode==200){
         var stockharga=json.decode(hargaapi.body);
-        var chartsaham=json.decode(chartapi.body);
         var x={
           "price":stockharga['c'].toString(),
           "nama":saham[i]['symbol'],
           "description":saham[i]['description'],
-          "chart":chartsaham['c'].toString()
         };
         setState(() {
           allstock.add(x);
@@ -113,6 +104,7 @@ class _HomeState extends State<Home> {
   }
 }
 
+// ignore: camel_case_types
 class stockSearch extends SearchDelegate<String> {
   @override
   List<Widget> buildActions(BuildContext context) {

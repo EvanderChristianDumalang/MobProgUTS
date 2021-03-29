@@ -51,31 +51,33 @@ class _UsersState extends State<Users> {
               ElevatedButton(
                 onPressed: () {
                   var ubah = int.parse(custom2.text);
-                  try {
-                    if (ubah <= saldo) {
-                      setState(() {
-                        FirebaseFirestore.instance
-                            .collection('balance')
-                            .where('uid',
-                                isEqualTo: _authService.getCurrentUID())
-                            .get()
-                            .then((value) {
-                          value.docs.forEach((element) {
-                            FirebaseFirestore.instance
-                                .collection('balance')
-                                .doc(element.id)
-                                .delete()
-                                .then((value) {
-                              DatabaseService3().addBalance(saldo);
-                            });
+                  saldo=balance;
+                  if (ubah > saldo) {
+                    final snackBar = SnackBar(content: Text('Balance limited'));
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    print("ey");
+                  } else {
+                    setState(() {
+                      FirebaseFirestore.instance
+                          .collection('balance')
+                          .where('uid', isEqualTo: _authService.getCurrentUID())
+                          .get()
+                          .then((value) {
+                        value.docs.forEach((element) {
+                          FirebaseFirestore.instance
+                              .collection('balance')
+                              .doc(element.id)
+                              .delete()
+                              .then((value) {
+                            DatabaseService3().addBalance(saldo);
                           });
                         });
-                        saldo = saldo - ubah;
-                        balance=saldo;
                       });
-                    }
-                  } catch (e) {
-                    setState(() => error = "Saldo tidak cukup");
+                      saldo = saldo - ubah;
+                      balance = saldo;
+                    });
+                    Navigator.pop(context);
                   }
                 },
                 child: Text('Withdraw'),
@@ -122,12 +124,12 @@ class _UsersState extends State<Users> {
               ElevatedButton(
                 onPressed: () {
                   var ubah = int.parse(custom2.text);
-                  saldo=balance;
+                  saldo = balance;
                   if (saldo == null) {
                     setState(() {
                       saldo = ubah;
                       DatabaseService3().addBalance(saldo);
-                      balance=saldo;
+                      balance = saldo;
                     });
                   } else {
                     setState(() {
@@ -147,7 +149,7 @@ class _UsersState extends State<Users> {
                         });
                       });
                       saldo = ubah + saldo;
-                      balance=saldo;
+                      balance = saldo;
                     });
                   }
                 },
@@ -164,9 +166,16 @@ class _UsersState extends State<Users> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('TRAPP'),actions:  <Widget>[IconButton(icon: Icon(Icons.refresh), onPressed:(){
-         Navigator.push( context, MaterialPageRoute( builder: (context) => Users()), ).then((value) => setState(() {}));
-        }) 
+        title: Text('TRAPP'),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Users()),
+                ).then((value) => setState(() {}));
+              })
         ],
       ),
       body: getBody(),
@@ -174,8 +183,7 @@ class _UsersState extends State<Users> {
   }
 
   Widget getBody() {
-
-      FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('balance')
         .where('uid', isEqualTo: _authService.getCurrentUID())
         .get()
@@ -184,7 +192,7 @@ class _UsersState extends State<Users> {
         balance = doc['balance'];
       });
     });
-           
+
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.fromLTRB(30, 40, 30, 0),

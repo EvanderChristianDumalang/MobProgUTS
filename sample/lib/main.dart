@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // ignore: missing_required_param
     return StreamProvider<MyUser>.value(
        value: AuthService().user,
        child: MaterialApp(
@@ -23,3 +24,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// Email: Evansimba666@gmail.com
+// Password: asdasdasd
